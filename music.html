@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Music Doc</title>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+	<style type="text/css">
+		* {margin:0; padding:0; box-sizing:border-box; font-family: arial}
+		html {font-size: 62.5%}
+		.main_div {width:100vw; height: 100vh; background: #f6f6f6; display: grid; place-items:center;}
+		.music_con {width:35rem; height: 55rem; background: #fff; border-radius: 20px; padding:2rem; text-align: center; box-shadow: 3px 3px 19px #858888; }
+		h2 {text-transform: uppercase; font-size: 25px; word-spacing: 0.5rem; letter-spacing: 0.2rem; margin:2rem 0 0.5rem 0; font-weight: 500; }
+		h3 {color: #cccaca; text-transform: capitalize; letter-spacing: 0.1rem; font-size: 20px; margin: 0 0 4rem; font-weight: 200;}
+		.img_com {width:200px; height: 200px; margin: auto;}
+		img {width: 100%; height: 100%; border-radius: 50%; object-fit: cover; box-shadow: 3px 3px 19px #858888;}
+		.fas{font-size: 15px; color: #111; cursor: pointer;filter: drop-shadow(0 5px 5px 5px rgba(0,0,0,0.5));}
+		.fas:hover {color: #666;}
+		.control {width:80%; display: flex; align-items: center;justify-content: space-between; margin:50px auto 0;}
+		.main_button {width: 50px; height: 50px; border-radius: 50%; background: #111; color: #f6f6f6;  display: flex; justify-content: center; align-items: center;}
+		.main_button.fas:hover {background: #fff; color: #111;box-shadow: 3px 3px 19px #858888;}
+		.animae { animation: rotateplayer 3s linear infinite; }
+		@keyframes rotateplayer { 
+			from { transform: rotate(0deg); } 
+			to { transform: rotate(360deg); }
+		}
+
+		.progress_bar {width: 100%; padding:1rem 0; margin-top:1rem; }
+		.progress_div, .progress{/*transition: width 1s linear;*/ appearance:none; cursor: pointer; box-shadow: 1px 0px 18px #000223;}
+		.progress_div {margin-top: 0.5rem; height: 0.5rem; border-radius: 4rem; position: relative; }
+		.progress { position: absolute; top:0; left: 0; width: 0%; height: 100%; background: #000; }
+		.progress_dur {display: flex; justify-content: space-between; font-size: 1.5rem;}
+	</style>
+</head>
+<body>
+
+	<div class="main_div">
+
+		<div class="music_con">
+			
+			<h2>
+				Hall kaisa hai
+			</h2>
+			<h3>
+				Asha Bhosle
+			</h3>
+
+			<div class="img_com">
+				<img src="assets/images/haal.jpg">
+			</div>
+
+			<audio src="assets/music/haal.mp3" ></audio>
+
+			<div class="progress_bar" id="progress_con">
+				
+				<div class="progress_dur">
+					<div id="current_time">
+						0:00
+					</div>
+					<div id="total_duration">
+						4:28
+					</div>
+				</div>
+				<div class="progress_div" id="progress_div">
+					<div class="progress" id="progress"></div>
+				</div>
+					
+				
+
+
+			</div>
+
+			<div class="control">
+				<i class="fas fa-backward" id="prev" title="previous"></i>
+				<i class="fas fa-play main_button " id="play" title="play"></i>
+				<i class="fas fa-forward" id="next" title="next"></i>
+			</div>
+		</div>
+		
+	</div>
+
+
+	<script type="text/javascript">
+		const music = document.querySelector('audio');
+		const img = document.querySelector('img');
+		const play =  document.getElementById('play');
+		const mainHeading = document.querySelector('h2');
+		const subheading = document.querySelector('h3');
+		const prev =  document.getElementById('prev');
+		const next =  document.getElementById('next');
+		let progress = document.getElementById('progress');
+		let current_time = document.getElementById('current_time');
+		let total_duration = document.getElementById('total_duration');
+		const progress_div = document.getElementById('progress_div');
+
+		const songs = [
+
+			{
+				name : "haal",
+				title : "Hall kaisa hai",
+				artist : "Asha Bhosle"
+			},
+			{
+				name : "Yeh",
+				title : "Ye chand sa",
+				artist : "Mohammed Rafi",
+			},
+			{
+				name : "acha",
+				title : "Acha ji main",
+				artist : "Asha Bhosle"
+			},
+			{
+				name : "naach",
+				title : "naach meri rani",
+				artist : "Tanishk Bagchi"
+			}
+
+		]
+
+		let isPlaying = false;
+
+		const playMusic = () => {
+			isPlaying = true;
+			music.play();
+			play.classList.replace('fa-play', 'fa-pause');
+			img.classList.add('animae');
+		};
+
+		// for pouse fun
+
+		const pauseMusic = () => {
+			isPlaying = false;
+			music.pause();
+			play.classList.replace('fa-pause', 'fa-play');
+			img.classList.remove('animae');
+		};
+
+		play.addEventListener('click', () => {			
+			isPlaying ? pauseMusic() : playMusic();
+		});
+
+		// changing sone fun
+
+		const loadSongs = (songs) => {
+			mainHeading.textContent = songs.title;
+			subheading.textContent = songs.artist;
+			music.src = `assets/music/${songs.name}.mp3`;
+			img.src = "assets/images/" + songs.name + ".jpg";
+		}
+
+		songIndex = 0;
+		//loadSongs(songs[1]);
+
+		const nextSong = () => {
+			//songIndex++;
+			songIndex = (songIndex + 1) % songs.length;
+			loadSongs(songs[songIndex]);
+			playMusic();
+		};
+
+		const prevSong = () => {
+			//songIndex++;
+			songIndex = (songIndex - 1 + songs.length) % songs.length;
+			loadSongs(songs[songIndex]);
+			playMusic();
+		};
+
+
+		// progress js code
+		// https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event
+		music.addEventListener("timeupdate", (event) => {
+			//console.log(event)
+
+			const { currentTime,duration } = event.srcElement;
+			let progress_time = (currentTime/duration) * 100;
+			//console.log(progress_time)
+			progress.style.width = `${progress_time}%`;
+
+			// music duration update
+			let min_duration = Math.floor(duration / 60);
+			let sec_duration = Math.floor(duration % 60);
+			// console.log(`mint will be ${min_duration}`);
+			// console.log(`sec will be ${sec_duration}`);
+
+			let tol_due = `${min_duration}:${sec_duration}`;
+
+			if(duration){
+				total_duration.textContent = `${tol_due}`
+			}
+
+			// current duration update
+			let min_currentTime = Math.floor(currentTime / 60);
+			let sec_currentTime = Math.floor(currentTime % 60);
+			// console.log(`mint will be ${min_currentTime}`);
+			// console.log(`sec will be ${sec_currentTime}`);			
+
+			if(sec_currentTime < 10){
+				sec_currentTime = `0${sec_currentTime}`
+			}
+
+			let tol_due_sec = `${min_currentTime}:${sec_currentTime}`;
+			current_time.textContent = `${tol_due_sec}`
+			
+		});
+
+		// progress function
+
+		progress_div.addEventListener('click', (event) => {
+			//console.log(event);
+			const { duration } = music;
+			let move_progress = (event.offsetX / event.srcElement.clientWidth) * duration;
+			// console.log(`duration of bar ${duration}`);
+			// console.log(move_progress);
+
+			music.currentTime = move_progress;
+		});
+
+		// next song function
+		music.addEventListener('ended', nextSong);
+
+		next.addEventListener('click', nextSong);
+		prev.addEventListener('click', prevSong);
+
+
+
+	</script>
+
+
+</body>
+</html>
